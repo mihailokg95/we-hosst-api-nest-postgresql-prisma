@@ -1,0 +1,138 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator nestjsDto {
+  provider                        = "prisma-generator-nestjs-dto"
+  output                          = "../src/generated/nestjs-dto"
+  outputToNestJsResourceStructure = "false"
+  flatResourceStructure           = "false"
+  exportRelationModifierClasses   = "true"
+  reExport                        = "false"
+  createDtoPrefix                 = "Create"
+  updateDtoPrefix                 = "Update"
+  dtoSuffix                       = "Dto"
+  entityPrefix                    = ""
+  entitySuffix                    = ""
+  classValidation                 = "false"
+  fileNamingStyle                 = "camel"
+  noDependencies                  = "false"
+  outputType                      = "class"
+  definiteAssignmentAssertion     = "false"
+  requiredResponseApiProperty     = "true"
+  prettier                        = "true"
+}
+
+enum UserRole {
+  USER
+  EMPLOYER
+  ADMIN
+  MANAGER
+}
+
+enum ApplicationStatus {
+  APPLIED
+  VIEWED
+  DECLINED
+  ACCEPTED
+}
+
+model User {
+  id          Int   @unique @id @default(autoincrement())
+  firstName   String   
+  lastName    String   
+  age         Int?
+  email       String   @unique 
+  password    String   
+  role        UserRole  @default(USER)
+  avatar      String?
+  bookmarks    Int[] 
+  applications Application[] @relation("UserApplications")
+  applicationId Int[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  jobs         Job[]   @relation(name: "JobEmployer")
+  applicationsApplicant Application[] @relation("ApplicationsApplicant")
+}
+
+model Company {
+  id           Int      @unique @id @default(autoincrement())
+  address      String?
+  applications Application[]
+  jobs         Job[]
+  createdAt    DateTime @default(now())
+  description  String
+  email        String?
+  employerId   Int
+  employerName String
+  locations    Location[]
+  name         String
+  phone        String?
+  pib          String?
+  updatedAt    DateTime @updatedAt
+}
+
+model Location {
+  id           Int      @unique @id @default(autoincrement())
+  address      String?
+  jobs         Job[]
+  createdAt    DateTime @default(now())
+  description  String
+  email        String?
+  employerId   Int
+  employerName String
+  name         String
+  phone        String?
+  pib          String?
+  updatedAt    DateTime @updatedAt
+  company      Company  @relation(fields: [employerId], references: [id])
+}
+
+model Application {
+  id        Int      @unique @id @default(autoincrement())
+  jobId     Int   
+  job       Job      @relation("JobApplications", fields: [jobId], references: [id])
+  applicant User     @relation( "UserApplications", fields: [applicantId], references: [id])
+  applicantId Int
+  resume     String
+  coverLetter String
+  status     ApplicationStatus @default(APPLIED)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  companyId   Int
+  company     Company @relation(fields: [companyId], references: [id])
+  applicationsApplicant User[] @relation("ApplicationsApplicant")
+}
+
+model Job {
+  id           Int      @unique @id @default(autoincrement())
+  employer     User     @relation(name: "JobEmployer", fields: [employerId], references: [id])
+  employerId   Int   
+  employerName String
+  title        String   
+  description  String   
+  requirements String[]
+  applicationId Int[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  applications Application[] @relation("JobApplications")
+  location     Location @relation(fields: [locationId], references: [id])
+  locationId   Int 
+  company     Company @relation(fields: [companyId], references: [id])
+  companyId   Int
+}
+
+
+
+
