@@ -9,9 +9,19 @@ import { LoggerService } from './logger.service';
 import { SecurityMiddleware } from './security.middleware';
 import { PrismaModule } from './prisma.module';
 import { PrismaService } from './prisma.service';
+import { UploadModule } from './upload/upload.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [UsersModule, AuthModule, PrismaModule],
+  imports: [
+    UsersModule,
+    AuthModule,
+    PrismaModule,
+    UploadModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+  ],
   controllers: [AppController],
   providers: [
     AppService,

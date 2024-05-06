@@ -51,7 +51,7 @@ enum ApplicationStatus {
 model User {
   id          Int   @unique @id @default(autoincrement())
   firstName   String   
-  lastName    String   
+  lastName    String?   
   age         Int?
   email       String   @unique 
   password    String   
@@ -68,18 +68,19 @@ model User {
 
 model Company {
   id           Int      @unique @id @default(autoincrement())
-  address      String?
+  address      String
   applications Application[]
   jobs         Job[]
   createdAt    DateTime @default(now())
   description  String
-  email        String?
+  email        String
   employerId   Int
   employerName String
   locations    Location[]
   name         String
-  phone        String?
-  pib          String?
+  phone        String
+  vat          String
+  crn          String
   updatedAt    DateTime @updatedAt
 }
 

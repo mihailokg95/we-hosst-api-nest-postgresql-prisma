@@ -12,13 +12,15 @@ export class CreateUserDto {
     type: 'string',
   })
   @IsString()
-  firstName: string;
+  @IsOptional()
+  firstName?: string;
 
   @ApiProperty({
     type: 'string',
   })
   @IsString()
-  lastName: string;
+  @IsOptional()
+  lastName?: string;
 
   @ApiProperty({
     type: 'integer',
