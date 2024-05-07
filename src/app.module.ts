@@ -9,12 +9,7 @@ import { PrismaModule } from './prisma.module';
 import { PrismaService } from './prisma.service';
 import { UploadModule } from './upload/upload.module';
 import { ConfigModule } from '@nestjs/config';
-import { CompaniesResolver } from './companies/companies.resolver';
-import { LocationsResolver } from './locations/locations.resolver';
-import { ApplicationsResolver } from './applications/applications.resolver';
-import { JobsResolver } from './jobs/jobs.resolver';
 import { JwtModule } from '@nestjs/jwt';
-import { LocationsResolver } from './locations/locations.resolver';
 import { LocationsModule } from './locations/locations.module';
 import { CompaniesModule } from './companies/companies.module';
 import { JobsModule } from './jobs/jobs.module';
@@ -44,10 +39,6 @@ import { JobsModule } from './jobs/jobs.module';
       provide: APP_INTERCEPTOR,
       useClass: ErrorInterceptor,
     },
-    CompaniesResolver,
-    LocationsResolver,
-    ApplicationsResolver,
-    JobsResolver,
   ],
   exports: [PrismaService],
 })
