@@ -10,6 +10,7 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Response } from 'express';
 
 @Controller('users')
 export class UsersController {
@@ -36,7 +37,19 @@ export class UsersController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: string, res: Response) {
+    res.clearCookie('jwt-token', {
+      httpOnly: true,
+      sameSite: 'none',
+      secure: true,
+    });
+
+    // Clear cookies
+    res.clearCookie('jwt-token-refresh', {
+      httpOnly: true,
+      sameSite: 'none',
+      secure: true,
+    });
     return this.usersService.deleteUser(+id);
   }
 }

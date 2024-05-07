@@ -1,18 +1,11 @@
 import { UsersService } from '../users/users.service';
-import {
-  Body,
-  ConflictException,
-  Controller,
-  ForbiddenException,
-  Post,
-  Request,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { RefreshJwtGuard } from './guards/refresh-auth.guard';
-import * as argon2 from 'argon2';
-import { Response } from 'express';
+import { Response, Request as ExpressRequest } from 'express';
+import { UNAUTHORIZED } from 'src/constants';
+import { LoginDto } from './dto/login.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -22,55 +15,39 @@ export class AuthController {
   ) {}
 
   @Post('login')
-  async login(@Body() loginDto: { email: string; password: string }) {
-    return await this.authService.login(loginDto.email, loginDto.password);
+  async login(@Body() loginDto: LoginDto, res: Response) {
+    return await this.authService.login(loginDto, res);
   }
 
   @Post('register')
-  async registerUser(@Body() createUserDto: CreateUserDto) {
-    try {
-      const foundUser = await this.userService.findOneByEmail(
-        createUserDto.email,
-      );
-      if (foundUser) {
-        throw new ConflictException('E-mail already in use');
-      }
-
-      const user = await this.userService.createUser({
-        ...createUserDto,
-        email: createUserDto.email,
-        password: await this.hashPassword(createUserDto.password),
-        firstName: createUserDto.firstName,
-      });
-      if (!user) {
-        throw new ForbiddenException('Could not create user');
-      }
-      return this.login(createUserDto);
-    } catch (error: any) {
-      return error.response;
-    }
+  async register(@Body() createUserDto: CreateUserDto, res: Response) {
+    return await this.authService.register(createUserDto, res);
   }
 
   @UseGuards(RefreshJwtGuard)
   @Post('refresh')
-  async refrshToken(@Request() req) {
+  async refrsh(@Request() req) {
     return this.authService.refresh(req.user);
   }
 
-  async signout(req: Request, res: Response) {
+  /**
+   * @desc    Logout
+   * @route   POST /auth/logout
+   * @access  PUBLIC - just to clear cookies if exist
+   */
+  async logout(req: ExpressRequest, res: Response) {
+    if (!req.cookies['jwt-token-refresh']) {
+      return res.status(401).json({ message: UNAUTHORIZED });
+    }
     try {
-      res.clearCookie('token');
+      res.clearCookie('jwt-token-refresh', {
+        httpOnly: true,
+        sameSite: 'none',
+        secure: true,
+      });
       return res.send({ message: 'Successfully Logged Out' });
     } catch (error: any) {
       throw new Error(error.message);
     }
-  }
-
-  async hashPassword(password: string) {
-    const hashed = await argon2.hash(password);
-    return hashed;
-  }
-  async comparePassword(args: { password: string; hash: string }) {
-    return await argon2.verify(args.hash, args.password);
   }
 }

@@ -1,8 +1,8 @@
 import { ApplicationStatus } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
 import { Job } from './job.entity';
+import { User } from './user.entity';
 import { Company } from './company.entity';
-import { User } from 'src/users/entities/user.entity';
 
 export class Application {
   @ApiProperty({

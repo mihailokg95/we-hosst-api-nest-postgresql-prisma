@@ -1,6 +1,4 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ErrorInterceptor } from './error.interceptor';
@@ -11,6 +9,15 @@ import { PrismaModule } from './prisma.module';
 import { PrismaService } from './prisma.service';
 import { UploadModule } from './upload/upload.module';
 import { ConfigModule } from '@nestjs/config';
+import { CompaniesResolver } from './companies/companies.resolver';
+import { LocationsResolver } from './locations/locations.resolver';
+import { ApplicationsResolver } from './applications/applications.resolver';
+import { JobsResolver } from './jobs/jobs.resolver';
+import { JwtModule } from '@nestjs/jwt';
+import { LocationsResolver } from './locations/locations.resolver';
+import { LocationsModule } from './locations/locations.module';
+import { CompaniesModule } from './companies/companies.module';
+import { JobsModule } from './jobs/jobs.module';
 
 @Module({
   imports: [
@@ -21,16 +28,26 @@ import { ConfigModule } from '@nestjs/config';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    JwtModule.register({
+      global: true,
+      secret: `${process.env.jwt_secret}`,
+      signOptions: { expiresIn: '45m' },
+    }),
+    LocationsModule,
+    CompaniesModule,
+    JobsModule,
   ],
-  controllers: [AppController],
   providers: [
-    AppService,
     LoggerService,
     PrismaService,
     {
       provide: APP_INTERCEPTOR,
       useClass: ErrorInterceptor,
     },
+    CompaniesResolver,
+    LocationsResolver,
+    ApplicationsResolver,
+    JobsResolver,
   ],
   exports: [PrismaService],
 })

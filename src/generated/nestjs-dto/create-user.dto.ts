@@ -1,50 +1,47 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class UpdateCompanyDto {
+export class CreateUserDto {
+  @ApiProperty({
+    type: 'string',
+  })
+  firstName: string;
   @ApiProperty({
     type: 'string',
     required: false,
+    nullable: true,
   })
-  address?: string;
-  @ApiProperty({
-    type: 'string',
-    required: false,
-  })
-  description?: string;
-  @ApiProperty({
-    type: 'string',
-    required: false,
-  })
-  email?: string;
+  lastName?: string | null;
   @ApiProperty({
     type: 'integer',
     format: 'int32',
     required: false,
+    nullable: true,
   })
-  employerId?: number;
+  age?: number | null;
+  @ApiProperty({
+    type: 'string',
+  })
+  email: string;
+  @ApiProperty({
+    type: 'string',
+  })
+  password: string;
   @ApiProperty({
     type: 'string',
     required: false,
+    nullable: true,
   })
-  employerName?: string;
+  avatar?: string | null;
   @ApiProperty({
-    type: 'string',
-    required: false,
+    type: 'integer',
+    format: 'int32',
+    isArray: true,
   })
-  name?: string;
+  bookmarks: number[];
   @ApiProperty({
-    type: 'string',
-    required: false,
+    type: 'integer',
+    format: 'int32',
+    isArray: true,
   })
-  phone?: string;
-  @ApiProperty({
-    type: 'string',
-    required: false,
-  })
-  vat?: string;
-  @ApiProperty({
-    type: 'string',
-    required: false,
-  })
-  crn?: string;
+  applicationId: number[];
 }

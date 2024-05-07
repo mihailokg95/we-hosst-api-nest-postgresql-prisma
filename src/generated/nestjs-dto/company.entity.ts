@@ -11,9 +11,8 @@ export class Company {
   id: number;
   @ApiProperty({
     type: 'string',
-    nullable: true,
   })
-  address: string | null;
+  address: string;
   @ApiProperty({
     isArray: true,
     required: false,
@@ -35,9 +34,8 @@ export class Company {
   description: string;
   @ApiProperty({
     type: 'string',
-    nullable: true,
   })
-  email: string | null;
+  email: string;
   @ApiProperty({
     type: 'integer',
     format: 'int32',
@@ -58,14 +56,16 @@ export class Company {
   name: string;
   @ApiProperty({
     type: 'string',
-    nullable: true,
   })
-  phone: string | null;
+  phone: string;
   @ApiProperty({
     type: 'string',
-    nullable: true,
   })
-  pib: string | null;
+  vat: string;
+  @ApiProperty({
+    type: 'string',
+  })
+  crn: string;
   @ApiProperty({
     type: 'string',
     format: 'date-time',

@@ -1,41 +1,57 @@
+import { UserRole } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
-import { User } from './user.entity';
 import { Application } from './application.entity';
-import { Location } from './location.entity';
-import { Company } from './company.entity';
+import { Job } from './job.entity';
 
-export class Job {
+export class User {
   @ApiProperty({
     type: 'integer',
     format: 'int32',
   })
   id: number;
   @ApiProperty({
-    required: false,
+    type: 'string',
   })
-  employer?: User;
+  firstName: string;
+  @ApiProperty({
+    type: 'string',
+    nullable: true,
+  })
+  lastName: string | null;
   @ApiProperty({
     type: 'integer',
     format: 'int32',
+    nullable: true,
   })
-  employerId: number;
+  age: number | null;
   @ApiProperty({
     type: 'string',
   })
-  employerName: string;
+  email: string;
   @ApiProperty({
     type: 'string',
   })
-  title: string;
+  password: string;
   @ApiProperty({
-    type: 'string',
+    enum: UserRole,
   })
-  description: string;
+  role: UserRole;
   @ApiProperty({
     type: 'string',
+    nullable: true,
+  })
+  avatar: string | null;
+  @ApiProperty({
+    type: 'integer',
+    format: 'int32',
     isArray: true,
   })
-  requirements: string[];
+  bookmarks: number[];
+  @ApiProperty({
+    isArray: true,
+    required: false,
+  })
+  applications?: Application[];
   @ApiProperty({
     type: 'integer',
     format: 'int32',
@@ -56,23 +72,10 @@ export class Job {
     isArray: true,
     required: false,
   })
-  applications?: Application[];
+  jobs?: Job[];
   @ApiProperty({
+    isArray: true,
     required: false,
   })
-  location?: Location;
-  @ApiProperty({
-    type: 'integer',
-    format: 'int32',
-  })
-  locationId: number;
-  @ApiProperty({
-    required: false,
-  })
-  company?: Company;
-  @ApiProperty({
-    type: 'integer',
-    format: 'int32',
-  })
-  companyId: number;
+  applicationsApplicant?: Application[];
 }
