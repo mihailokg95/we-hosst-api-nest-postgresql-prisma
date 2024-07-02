@@ -36,5 +36,10 @@ export class CreateLocationDto {
     required: false,
     nullable: true,
   })
-  pib?: string | null;
+  vat?: string | null;
+  @ApiProperty({
+    type: 'string',
+    isArray: true,
+  })
+  socialNetworks: string[];
 }

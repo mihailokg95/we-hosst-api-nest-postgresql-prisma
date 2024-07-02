@@ -1,16 +1,20 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
 } from '@nestjs/common';
-import { UsersService } from './users.service';
+import { Response } from 'express';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Response } from 'express';
+import { UsersService } from './users.service';
+import { Prisma } from '@prisma/client';
+import { IsMineGuard } from 'src/auth/guards/is-mine.guard';
 
 @Controller('users')
 export class UsersController {
@@ -22,21 +26,30 @@ export class UsersController {
   }
 
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  findAll(
+    @Query('page') page: number = 1, // Set default page to 1
+    @Query('limit') limit: number = 10, // Set default limit to 10
+    @Query('odrderBy')
+    orderBy: { updatedAt: Prisma.SortOrder } = {
+      updatedAt: 'asc' as Prisma.SortOrder,
+    }, // Set default limit to 10
+  ) {
+    return this.usersService.findAll({ page, limit, orderBy });
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    return await this.usersService.getUserById(+id);
   }
 
   @Patch(':id')
+  @UseGuards(IsMineGuard)
   update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.updateUser({ id, updateUserDto });
   }
 
   @Delete(':id')
+  @UseGuards(IsMineGuard)
   remove(@Param('id') id: string, res: Response) {
     res.clearCookie('jwt-token', {
       httpOnly: true,

@@ -8,12 +8,12 @@ import {
 } from '@nestjs/common';
 import * as argon2 from 'argon2';
 import { JwtService } from '@nestjs/jwt';
-import { User } from 'src/users/entities/user.entity';
 import { PrismaService } from 'src/prisma.service';
 import { LoginDto } from './dto/login.dto';
 import { ConfigService } from '@nestjs/config';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
-import { Response } from 'express';
+import { Response, Request } from 'express';
+import { ACCOUNT_NOT_FOUND, UNAUTHORIZED } from 'src/constants';
 
 @Injectable()
 export class AuthService {
@@ -24,9 +24,9 @@ export class AuthService {
     private configService: ConfigService,
   ) {}
 
-  async register(createUserDto: CreateUserDto, res: Response) {
+  async register(createUserDto: CreateUserDto) {
     try {
-      const foundUser = await this.userService.findOneByEmail(
+      const foundUser = await this.userService.getUserByEmail(
         createUserDto.email,
       );
       if (foundUser) {
@@ -42,7 +42,7 @@ export class AuthService {
       if (!user) {
         throw new ForbiddenException('Could not create user');
       }
-      return this.login(createUserDto, res);
+      return user;
     } catch (error: any) {
       return error.response;
     }
@@ -53,12 +53,13 @@ export class AuthService {
     return hashed;
   }
   async validateUser(email: string, password: string) {
-    const user = await this.userService.findOneByEmail(email);
+    const user = await this.userService.getUserByEmail(email);
     if (!user) {
       throw new UnauthorizedException('User doesnt exist');
     }
     const verified = await argon2.verify(user.password, password);
-    if (!verified) {
+
+    if (verified) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...result } = user;
       return result;
@@ -75,36 +76,37 @@ export class AuthService {
       email: user.email,
       age: user.age,
       role: user.role,
-      userId: user.id,
+      id: user.id,
       sub: {
         name: user.firstName,
       },
       expiresIn: this.configService.getOrThrow<string>('accessTokenExpiresIn'),
     };
 
-    const accessToken = this.jwtService.signAsync(
-      payload,
-      this.configService.getOrThrow('jwt_secret'),
-    );
+    const accessToken = await this.jwtService.signAsync(payload, {
+      secret: this.configService.getOrThrow('jwt_secret'),
+    });
 
     res.cookie('jwt-token', accessToken, {
       httpOnly: true, // accessible only by the web server
       secure: true, // https only
       sameSite: 'none', // cross site cookie
-      maxAge: 45 * 60 * 1000, // cookie expiry: set to match accessToken (45 min)
+      maxAge: 5 * 60 * 1000, // cookie expiry: set to match accessToken (5 min)
     });
 
-    // Create a refresh tokenn
-    const refreshToken = this.jwtService.signAsync(
+    // Create a refresh token
+    const refreshToken = await this.jwtService.signAsync(
       {
         email: user.email,
+        id: user.id
+      },
+      {
         expiresIn: this.configService.getOrThrow<string>(
           'refreshTokenExpiresIn',
         ),
+        secret: this.configService.getOrThrow('jwt_secret'),
       },
-      this.configService.getOrThrow('jwt_secret'),
     );
-
     res.cookie('jwt-token-refresh', refreshToken, {
       httpOnly: true, // accessible only by the web server
       secure: true, // https only
@@ -117,16 +119,54 @@ export class AuthService {
     };
   }
 
-  async refresh(user: User) {
+  async refresh(req: Request, res: Response) {
+    const cookies = req.cookies;
+    if (!cookies['jwt-token-refresh']) {
+      console.log("no jwt-token-refresh")
+      return res.status(401).json({ message: UNAUTHORIZED });
+    }
+
+    const refreshToken = cookies['jwt-token-refresh'] as string;
+    console.log("ref token from cookies is:", refreshToken)
+    const verified = await this.jwtService.verifyAsync(refreshToken, {
+      secret: this.configService.getOrThrow('jwt_secret'),
+    });
+    console.log("refresh token is verified: ",verified)
+    if (!verified) {
+      return res.status(401).json({ message: UNAUTHORIZED });
+    }
+
+    const { email } = this.jwtService.decode(refreshToken) as { email: string };
+
+    const user = await this.userService.getUserByEmail(email);
+    if (!user) {
+      return res.status(404).json({ message: ACCOUNT_NOT_FOUND });
+    }
+    // Create a new access token
     const payload = {
-      username: user.email,
+      firstName: email,
+      lastName: user.lastName,
+      email: user.email,
+      age: user.age,
+      role: user.role,
+      id: user.id,
       sub: {
         name: user.firstName,
       },
+      expiresIn: this.configService.getOrThrow<string>('accessTokenExpiresIn'),
     };
 
-    return {
-      accessToken: this.jwtService.sign(payload),
-    };
+    const accessToken = await this.jwtService.signAsync(payload, {
+      secret: this.configService.getOrThrow('jwt_secret'),
+    });
+
+    res.cookie('jwt-token', accessToken, {
+      httpOnly: true, // accessible only by the web server
+      secure: true, // https only
+      sameSite: 'none', // cross site cookie
+      maxAge: 5 * 60 * 1000, // cookie expiry: set to match accessToken (15 minutes)
+    });
+
+    return res.json({ accessToken });
   }
 }

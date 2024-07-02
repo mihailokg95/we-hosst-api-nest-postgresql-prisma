@@ -2,7 +2,10 @@ import { PrismaService } from './../prisma.service';
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
+import { PaginateFunction, PaginatedResult, paginator } from 'src/paginator';
+
+const paginate: PaginateFunction = paginator({ perPage: 10 });
 
 @Injectable()
 export class UsersService {
@@ -13,22 +16,44 @@ export class UsersService {
     });
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findAll({
+    where,
+    orderBy,
+    page,
+    limit,
+  }: {
+    where?: Prisma.UserWhereInput;
+    orderBy?: Prisma.UserOrderByWithRelationInput;
+    page?: number;
+    limit?: number;
+  }): Promise<PaginatedResult<User[] | null>> {
+    return await paginate(
+      this.prisma.user,
+      {
+        where,
+        orderBy,
+        take: limit,
+      },
+      {
+        page,
+      },
+    );
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async getUserById(id: number): Promise<User | null> {
+    return await this.prisma.user.findUniqueOrThrow({
+      where: { id },
+    });
   }
 
-  async findOneByEmail(email: string): Promise<User | null> {
-    return this.prisma.user.findUnique({ where: { email } });
+  async getUserByEmail(email: string): Promise<User | null> {
+    return await this.prisma.user.findUniqueOrThrow({ where: { email } });
   }
 
   async updateUser(params: {
     id: number;
     updateUserDto: UpdateUserDto;
-  }): Promise<User> {
+  }): Promise<User | null> {
     const { id, updateUserDto } = params;
     return this.prisma.user.update({
       data: updateUserDto,

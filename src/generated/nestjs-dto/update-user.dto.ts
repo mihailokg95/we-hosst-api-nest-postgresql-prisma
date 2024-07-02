@@ -1,3 +1,4 @@
+import { NotificationsPreference } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateUserDto {
@@ -49,4 +50,10 @@ export class UpdateUserDto {
     required: false,
   })
   applicationId?: number[];
+  @ApiProperty({
+    isArray: true,
+    enum: NotificationsPreference,
+    required: false,
+  })
+  notificationPreferences?: NotificationsPreference[];
 }

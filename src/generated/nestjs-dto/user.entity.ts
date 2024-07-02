@@ -1,4 +1,4 @@
-import { UserRole } from '@prisma/client';
+import { UserRole, NotificationsPreference } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
 import { Application } from './application.entity';
 import { Job } from './job.entity';
@@ -73,6 +73,11 @@ export class User {
     required: false,
   })
   jobs?: Job[];
+  @ApiProperty({
+    isArray: true,
+    enum: NotificationsPreference,
+  })
+  notificationPreferences: NotificationsPreference[];
   @ApiProperty({
     isArray: true,
     required: false,

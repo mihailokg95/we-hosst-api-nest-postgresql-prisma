@@ -1,49 +1,53 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { UsersModule } from './users/users.module';
-import { AuthModule } from './auth/auth.module';
-import { ErrorInterceptor } from './error.interceptor';
-import { APP_INTERCEPTOR } from '@nestjs/core';
-import { LoggerService } from './logger.service';
-import { SecurityMiddleware } from './security.middleware';
-import { PrismaModule } from './prisma.module';
-import { PrismaService } from './prisma.service';
-import { UploadModule } from './upload/upload.module';
 import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
-import { LocationsModule } from './locations/locations.module';
+import { ApplicationsModule } from './applications/applications.module';
+import { AuthModule } from './auth/auth.module';
 import { CompaniesModule } from './companies/companies.module';
+import { ErrorInterceptor } from './error.interceptor';
 import { JobsModule } from './jobs/jobs.module';
+import { LocationsModule } from './locations/locations.module';
+import { AppLoggerMiddleware } from './logger.middleware';
+import { NotificationsModule } from './notifications/notifications.module';
+import { SecurityMiddleware } from './security.middleware';
+import { UploadModule } from './upload/upload.module';
+import { UsersModule } from './users/users.module';
+import { AuthGuard } from './auth/guards/auth.guard';
 
 @Module({
   imports: [
-    UsersModule,
-    AuthModule,
-    PrismaModule,
-    UploadModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
     JwtModule.register({
       global: true,
       secret: `${process.env.jwt_secret}`,
-      signOptions: { expiresIn: '45m' },
+      signOptions: { expiresIn: '5m' },
     }),
+    UsersModule,
+    AuthModule,
+    UploadModule,
     LocationsModule,
     CompaniesModule,
     JobsModule,
+    ApplicationsModule,
+    NotificationsModule,
   ],
   providers: [
-    LoggerService,
-    PrismaService,
     {
       provide: APP_INTERCEPTOR,
       useClass: ErrorInterceptor,
     },
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
   ],
-  exports: [PrismaService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(SecurityMiddleware).forRoutes('*');
+    consumer.apply(AppLoggerMiddleware).forRoutes('*');
   }
 }

@@ -39,5 +39,11 @@ export class UpdateLocationDto {
     required: false,
     nullable: true,
   })
-  pib?: string | null;
+  vat?: string | null;
+  @ApiProperty({
+    type: 'string',
+    isArray: true,
+    required: false,
+  })
+  socialNetworks?: string[];
 }

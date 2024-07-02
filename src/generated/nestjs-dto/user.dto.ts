@@ -1,4 +1,4 @@
-import { UserRole } from '@prisma/client';
+import { UserRole, NotificationsPreference } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UserDto {
@@ -61,4 +61,9 @@ export class UserDto {
     format: 'date-time',
   })
   updatedAt: Date;
+  @ApiProperty({
+    isArray: true,
+    enum: NotificationsPreference,
+  })
+  notificationPreferences: NotificationsPreference[];
 }

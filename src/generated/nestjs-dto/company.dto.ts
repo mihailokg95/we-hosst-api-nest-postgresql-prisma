@@ -12,11 +12,6 @@ export class CompanyDto {
   address: string;
   @ApiProperty({
     type: 'string',
-    format: 'date-time',
-  })
-  createdAt: Date;
-  @ApiProperty({
-    type: 'string',
   })
   description: string;
   @ApiProperty({
@@ -34,6 +29,11 @@ export class CompanyDto {
   employerName: string;
   @ApiProperty({
     type: 'string',
+    isArray: true,
+  })
+  socialNetworks: string[];
+  @ApiProperty({
+    type: 'string',
   })
   name: string;
   @ApiProperty({
@@ -43,11 +43,24 @@ export class CompanyDto {
   @ApiProperty({
     type: 'string',
   })
+  zip: string;
+  @ApiProperty({
+    type: 'string',
+  })
   vat: string;
   @ApiProperty({
     type: 'string',
   })
   crn: string;
+  @ApiProperty({
+    type: 'string',
+  })
+  website: string;
+  @ApiProperty({
+    type: 'string',
+    format: 'date-time',
+  })
+  createdAt: Date;
   @ApiProperty({
     type: 'string',
     format: 'date-time',

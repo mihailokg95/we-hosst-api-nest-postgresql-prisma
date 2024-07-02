@@ -24,6 +24,11 @@ export class CreateCompanyDto {
   employerName: string;
   @ApiProperty({
     type: 'string',
+    isArray: true,
+  })
+  socialNetworks: string[];
+  @ApiProperty({
+    type: 'string',
   })
   name: string;
   @ApiProperty({
@@ -33,9 +38,17 @@ export class CreateCompanyDto {
   @ApiProperty({
     type: 'string',
   })
+  zip: string;
+  @ApiProperty({
+    type: 'string',
+  })
   vat: string;
   @ApiProperty({
     type: 'string',
   })
   crn: string;
+  @ApiProperty({
+    type: 'string',
+  })
+  website: string;
 }

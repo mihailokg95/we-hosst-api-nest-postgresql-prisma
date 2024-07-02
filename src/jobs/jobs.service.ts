@@ -1,26 +1,39 @@
 import { Injectable } from '@nestjs/common';
 import { CreateJobDto } from './dto/create-job.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
+import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
 export class JobsService {
-  create(createJobDto: CreateJobDto) {
-    return 'This action adds a new job';
+  constructor(private prisma: PrismaService) {}
+  async create(createJobDto: CreateJobDto) {
+    return await this.prisma.job.create({ data: createJobDto });
   }
 
-  findAll() {
-    return `This action returns all jobs`;
+  async findAll() {
+    return await this.prisma.job.findMany();
+  }
+  async getEmployerJobs(id: number) {
+    return await this.prisma.job.findMany({
+      where: { employerId: id },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} job`;
+  async getApplicationsForAllJobs(id: number) {
+    return await this.prisma.job.findMany({
+      where: { employerId: id },
+      select: { applications: true },
+    });
+  }
+  async findOne(id: number) {
+    return await this.prisma.job.findUniqueOrThrow({ where: { id } });
   }
 
-  update(id: number, updateJobDto: UpdateJobDto) {
-    return `This action updates a #${id} job`;
+  async update(id: number, updateJobDto: UpdateJobDto) {
+    return await this.prisma.job.update({ where: { id }, data: updateJobDto });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} job`;
+  async remove(id: number) {
+    return await this.prisma.job.delete({ where: { id } });
   }
 }

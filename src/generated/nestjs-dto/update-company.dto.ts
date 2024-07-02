@@ -29,6 +29,12 @@ export class UpdateCompanyDto {
   employerName?: string;
   @ApiProperty({
     type: 'string',
+    isArray: true,
+    required: false,
+  })
+  socialNetworks?: string[];
+  @ApiProperty({
+    type: 'string',
     required: false,
   })
   name?: string;
@@ -41,10 +47,20 @@ export class UpdateCompanyDto {
     type: 'string',
     required: false,
   })
+  zip?: string;
+  @ApiProperty({
+    type: 'string',
+    required: false,
+  })
   vat?: string;
   @ApiProperty({
     type: 'string',
     required: false,
   })
   crn?: string;
+  @ApiProperty({
+    type: 'string',
+    required: false,
+  })
+  website?: string;
 }
