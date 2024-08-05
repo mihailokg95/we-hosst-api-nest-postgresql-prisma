@@ -4,8 +4,9 @@ export class UpdateJobDto {
   @ApiProperty({
     type: 'string',
     required: false,
+    nullable: true,
   })
-  employerName?: string;
+  employerName?: string | null;
   @ApiProperty({
     type: 'string',
     required: false,

@@ -26,11 +26,27 @@ export class CreateCompanyDto {
     type: 'string',
     isArray: true,
   })
+  images: string[];
+  @ApiProperty({
+    type: 'string',
+    isArray: true,
+  })
+  managers: string[];
+  @ApiProperty({
+    type: 'string',
+    isArray: true,
+  })
   socialNetworks: string[];
   @ApiProperty({
     type: 'string',
   })
   name: string;
+  @ApiProperty({
+    type: 'string',
+    required: false,
+    nullable: true,
+  })
+  logo?: string | null;
   @ApiProperty({
     type: 'string',
   })

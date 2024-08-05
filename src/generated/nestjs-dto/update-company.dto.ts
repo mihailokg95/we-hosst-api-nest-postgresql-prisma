@@ -32,12 +32,30 @@ export class UpdateCompanyDto {
     isArray: true,
     required: false,
   })
+  images?: string[];
+  @ApiProperty({
+    type: 'string',
+    isArray: true,
+    required: false,
+  })
+  managers?: string[];
+  @ApiProperty({
+    type: 'string',
+    isArray: true,
+    required: false,
+  })
   socialNetworks?: string[];
   @ApiProperty({
     type: 'string',
     required: false,
   })
   name?: string;
+  @ApiProperty({
+    type: 'string',
+    required: false,
+    nullable: true,
+  })
+  logo?: string | null;
   @ApiProperty({
     type: 'string',
     required: false,

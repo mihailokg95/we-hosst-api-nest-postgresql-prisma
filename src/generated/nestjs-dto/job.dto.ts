@@ -8,8 +8,9 @@ export class JobDto {
   id: number;
   @ApiProperty({
     type: 'string',
+    nullable: true,
   })
-  employerName: string;
+  employerName: string | null;
   @ApiProperty({
     type: 'string',
   })

@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Company } from '@prisma/client';
 
 export class CreateLocationDto {
   @ApiProperty({
@@ -45,6 +46,21 @@ export class CreateLocationDto {
     },
     required: false,
   })
+  @ApiProperty()
   socialNetworks?: string[];
-  companyId: number;
+  @ApiProperty({
+    type: 'number',})
+  public companyId: never;
+  @ApiProperty()
+  numberOfEmployees?: string;
+  @ApiProperty()
+  zip: string;
+  @ApiProperty()
+  city: string;
+  @ApiProperty()
+  country: string;
+  @ApiProperty()
+  company: any;
+  @ApiProperty()
+  public employerId: number;
 }

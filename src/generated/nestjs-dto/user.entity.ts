@@ -2,6 +2,7 @@ import { UserRole, NotificationsPreference } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
 import { Application } from './application.entity';
 import { Job } from './job.entity';
+import { Company } from './company.entity';
 
 export class User {
   @ApiProperty({
@@ -83,4 +84,15 @@ export class User {
     required: false,
   })
   applicationsApplicant?: Application[];
+  @ApiProperty({
+    required: false,
+    nullable: true,
+  })
+  company?: Company | null;
+  @ApiProperty({
+    type: 'integer',
+    format: 'int32',
+    nullable: true,
+  })
+  companyId: number | null;
 }

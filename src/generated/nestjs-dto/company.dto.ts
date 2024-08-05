@@ -31,11 +31,26 @@ export class CompanyDto {
     type: 'string',
     isArray: true,
   })
+  images: string[];
+  @ApiProperty({
+    type: 'string',
+    isArray: true,
+  })
+  managers: string[];
+  @ApiProperty({
+    type: 'string',
+    isArray: true,
+  })
   socialNetworks: string[];
   @ApiProperty({
     type: 'string',
   })
   name: string;
+  @ApiProperty({
+    type: 'string',
+    nullable: true,
+  })
+  logo: string | null;
   @ApiProperty({
     type: 'string',
   })

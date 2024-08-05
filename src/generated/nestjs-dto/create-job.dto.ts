@@ -3,8 +3,10 @@ import { ApiProperty } from '@nestjs/swagger';
 export class CreateJobDto {
   @ApiProperty({
     type: 'string',
+    required: false,
+    nullable: true,
   })
-  employerName: string;
+  employerName?: string | null;
   @ApiProperty({
     type: 'string',
   })

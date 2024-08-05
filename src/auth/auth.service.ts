@@ -8,7 +8,6 @@ import {
 } from '@nestjs/common';
 import * as argon2 from 'argon2';
 import { JwtService } from '@nestjs/jwt';
-import { PrismaService } from 'src/prisma.service';
 import { LoginDto } from './dto/login.dto';
 import { ConfigService } from '@nestjs/config';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
@@ -19,19 +18,18 @@ import { ACCOUNT_NOT_FOUND, UNAUTHORIZED } from 'src/constants';
 export class AuthService {
   constructor(
     private readonly userService: UsersService,
-    private readonly prisma: PrismaService,
     private jwtService: JwtService,
     private configService: ConfigService,
   ) {}
 
   async register(createUserDto: CreateUserDto) {
     try {
-      const foundUser = await this.userService.getUserByEmail(
-        createUserDto.email,
-      );
-      if (foundUser) {
-        throw new ConflictException('E-mail already in use');
-      }
+      // const foundUser = await this.userService.getUserByEmail(
+      //   createUserDto.email,
+      // );
+      // if (foundUser) {
+      //   throw new ConflictException('E-mail already in use');
+      // }
 
       const user = await this.userService.createUser({
         ...createUserDto,
@@ -39,11 +37,13 @@ export class AuthService {
         password: await this.hashPassword(createUserDto.password),
         firstName: createUserDto.firstName,
       });
+      console.log(user)
       if (!user) {
         throw new ForbiddenException('Could not create user');
       }
-      return user;
+      return {user};
     } catch (error: any) {
+      console.log(error)
       return error.response;
     }
   }
@@ -131,7 +131,7 @@ export class AuthService {
     const verified = await this.jwtService.verifyAsync(refreshToken, {
       secret: this.configService.getOrThrow('jwt_secret'),
     });
-    console.log("refresh token is verified: ",verified)
+    console.log("refresh token is verified: ", verified)
     if (!verified) {
       return res.status(401).json({ message: UNAUTHORIZED });
     }

@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Application } from './application.entity';
 import { Job } from './job.entity';
 import { Location } from './location.entity';
+import { User } from './user.entity';
 
 export class Company {
   @ApiProperty({
@@ -49,11 +50,26 @@ export class Company {
     type: 'string',
     isArray: true,
   })
+  images: string[];
+  @ApiProperty({
+    type: 'string',
+    isArray: true,
+  })
+  managers: string[];
+  @ApiProperty({
+    type: 'string',
+    isArray: true,
+  })
   socialNetworks: string[];
   @ApiProperty({
     type: 'string',
   })
   name: string;
+  @ApiProperty({
+    type: 'string',
+    nullable: true,
+  })
+  logo: string | null;
   @ApiProperty({
     type: 'string',
   })
@@ -84,4 +100,9 @@ export class Company {
     format: 'date-time',
   })
   updatedAt: Date;
+  @ApiProperty({
+    isArray: true,
+    required: false,
+  })
+  members?: User[];
 }

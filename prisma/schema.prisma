@@ -91,6 +91,7 @@ model Company {
   website        String
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
+  members        User[]
 }
 
 model Location {
@@ -102,7 +103,7 @@ model Location {
   phone             String?
   socialNetworks    String[]
   email             String?
-  numberOfEmployees String
+  numberOfEmployees String?
   address           String?
   zip               String
   jobs              Job[]
@@ -117,7 +118,8 @@ model Location {
   kitchenConcept    String?
   updatedAt         DateTime @updatedAt
   createdAt         DateTime @default(now())
-  company           Company  @relation(fields: [employerId], references: [id])
+  Company           Company? @relation(fields: [companyId], references: [id])
+  companyId         Int?
 }
 
 model Application {
