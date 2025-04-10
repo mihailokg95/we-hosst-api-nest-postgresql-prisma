@@ -57,6 +57,7 @@ export class Location {
   })
   zip: string;
   @ApiProperty({
+    type: () => Job,
     isArray: true,
     required: false,
   })
@@ -114,6 +115,7 @@ export class Location {
   })
   createdAt: Date;
   @ApiProperty({
+    type: () => Company,
     required: false,
     nullable: true,
   })

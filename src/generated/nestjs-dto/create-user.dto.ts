@@ -48,6 +48,7 @@ export class CreateUserDto {
   @ApiProperty({
     isArray: true,
     enum: NotificationsPreference,
+    enumName: 'NotificationsPreference',
   })
   notificationPreferences: NotificationsPreference[];
 }

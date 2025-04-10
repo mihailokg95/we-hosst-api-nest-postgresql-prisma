@@ -53,6 +53,7 @@ export class UpdateUserDto {
   @ApiProperty({
     isArray: true,
     enum: NotificationsPreference,
+    enumName: 'NotificationsPreference',
     required: false,
   })
   notificationPreferences?: NotificationsPreference[];
