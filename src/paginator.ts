@@ -1,13 +1,9 @@
 export interface PaginatedResult<T> {
+  total: number;
   data: T[];
-  meta: {
-    total: number;
-    lastPage: number;
-    currentPage: number;
-    perPage: number;
-    prev: number | null;
-    next: number | null;
-  };
+  limit: number;
+  pageNumber: number;
+  totalPages: number;
 }
 
 export type PaginateOptions = {
@@ -24,30 +20,26 @@ export const paginator = (
   defaultOptions: PaginateOptions,
 ): PaginateFunction => {
   return async (model, args: any = { where: undefined }, options) => {
-    const page = Number(options?.page || defaultOptions?.page) || 1;
-    const perPage = Number(options?.perPage || defaultOptions?.perPage) || 10;
+    const pageNumber = Number(options?.page || defaultOptions?.page) || 1;
+    const limit = Number(options?.perPage || defaultOptions?.perPage) || 10;
 
-    const skip = page > 0 ? perPage * (page - 1) : 0;
+    const skip = pageNumber > 0 ? limit * (pageNumber - 1) : 0;
     const [total, data] = await Promise.all([
       model.count({ where: args.where }),
       model.findMany({
         ...args,
-        take: perPage,
+        take: limit,
         skip,
       }),
     ]);
-    const lastPage = Math.ceil(total / perPage);
+    const totalPages = Math.ceil(total / limit);
 
     return {
       data,
-      meta: {
-        total,
-        lastPage,
-        currentPage: page,
-        perPage,
-        prev: page > 1 ? page - 1 : null,
-        next: page < lastPage ? page + 1 : null,
-      },
+      total,
+      limit,
+      pageNumber,
+      totalPages,
     };
   };
 };

@@ -24,12 +24,12 @@ export class AuthService {
 
   async register(createUserDto: CreateUserDto) {
     try {
-      // const foundUser = await this.userService.getUserByEmail(
-      //   createUserDto.email,
-      // );
-      // if (foundUser) {
-      //   throw new ConflictException('E-mail already in use');
-      // }
+      const foundUser = await this.userService.getUserByEmail(
+        createUserDto.email,
+      );
+      if (foundUser) {
+        throw new ConflictException('E-mail already in use');
+      }
 
       const user = await this.userService.createUser({
         ...createUserDto,

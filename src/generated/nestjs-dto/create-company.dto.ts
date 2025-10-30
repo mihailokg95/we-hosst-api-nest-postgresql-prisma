@@ -20,8 +20,10 @@ export class CreateCompanyDto {
   employerId: number;
   @ApiProperty({
     type: 'string',
+    required: false,
+    nullable: true,
   })
-  employerName: string;
+  employerName?: string | null;
   @ApiProperty({
     type: 'string',
     isArray: true,

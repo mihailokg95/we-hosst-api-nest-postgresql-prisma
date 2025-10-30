@@ -9,7 +9,10 @@ async function bootstrap() {
   app.use(cookieParser());
 
   app.enableCors({
-    origin: ['http://localhost:5173', 'http://localhost:4173'],
+    origin: [
+      'http://localhost:5173',
+      'http://localhost:4173',
+    ],
     credentials: true,
     optionsSuccessStatus: 200,
     exposedHeaders: ['Authorization'],
@@ -25,7 +28,7 @@ async function bootstrap() {
   app.use(
     rateLimit({
       windowMs: 15 * 60 * 1000, // 15 minutes
-      max: 100, // limit each IP to 100 requests per windowMs
+      max: 1000, // limit each IP to 100 requests per windowMs
       message: 'Too many requests, please try again later.',
     }),
   );
@@ -41,8 +44,8 @@ async function bootstrap() {
       },
     }),
   );
+  
   // Apply CSRF protection middleware
-
   const config = new DocumentBuilder()
     .setTitle('We hosst')
     .setDescription('Jobs portal We hosst')
@@ -51,7 +54,6 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
-
   await app.listen(8080);
 }
 

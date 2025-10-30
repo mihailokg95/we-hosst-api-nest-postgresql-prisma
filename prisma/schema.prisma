@@ -77,7 +77,7 @@ model Company {
   description    String
   email          String
   employerId     Int
-  employerName   String
+  employerName   String?
   locations      Location[]
   images         String[]
   managers       String[]

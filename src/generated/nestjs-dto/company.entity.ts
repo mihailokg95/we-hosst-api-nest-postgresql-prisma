@@ -39,8 +39,9 @@ export class Company {
   employerId: number;
   @ApiProperty({
     type: 'string',
+    nullable: true,
   })
-  employerName: string;
+  employerName: string | null;
   @ApiProperty({
     isArray: true,
     required: false,

@@ -11,9 +11,10 @@ export class EMailController {
     const mail = {
       to: email,
       subject: 'Hello from sendgrid',
-      from: 'office@hosst.ai', // Fill it with your validated email on SendGrid account
-      text: 'Hello',
-      html: '<h1>Hello</h1>',
+      // from: 'office@hosst.ai', // Fill it with your validated email on SendGrid account
+      from: 'greatfreight17@hotmail.com', // Fill it with your validated email on SendGrid account
+      text: 'NINDZAAAAAAA',
+      html: '<h1>NINDZAAAAAAA</h1>',
     };
     try {
       const email = await this.emailService.send(mail);

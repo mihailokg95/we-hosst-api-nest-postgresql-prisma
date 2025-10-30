@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { JobsService } from './jobs.service';
 import { CreateJobDto } from './dto/create-job.dto';
@@ -21,8 +22,9 @@ export class JobsController {
   }
 
   @Get()
-  findAll() {
-    return this.jobsService.findAll();
+  findAll(@Query('page') page: number, @Query('perPage') perPage: number) {
+    const options = { page, perPage };
+    return this.jobsService.findAll({page, perPage});
   }
 
   @Get(':id')

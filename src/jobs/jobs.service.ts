@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateJobDto } from './dto/create-job.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
 import { PrismaService } from 'src/prisma.service';
+import { PaginateOptions, paginator } from 'src/paginator';
 
 @Injectable()
 export class JobsService {
@@ -10,8 +11,10 @@ export class JobsService {
     return await this.prisma.job.create({ data: createJobDto });
   }
 
-  async findAll() {
-    return await this.prisma.job.findMany();
+  async findAll(options: PaginateOptions) {
+    const { page, perPage } = options;
+    const paginate = paginator({ page, perPage: perPage || 10 });
+    return await paginate(this.prisma.job, {where: {}}, options);
   }
   async getEmployerJobs(id: number) {
     return await this.prisma.job.findMany({
