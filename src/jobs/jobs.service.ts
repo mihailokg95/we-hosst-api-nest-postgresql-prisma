@@ -3,6 +3,8 @@ import { CreateJobDto } from './dto/create-job.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
 import { PrismaService } from 'src/prisma.service';
 import { paginator, PaginateOptions } from 'src/paginator';
+import { Prisma } from '@prisma/client';
+import { Job } from 'src/generated/nestjs-dto/job.entity';
 
 @Injectable()
 export class JobsService {
@@ -15,10 +17,10 @@ export class JobsService {
   }
 
   async findAll(options?: PaginateOptions) {
-    return await this.paginate<any, any>(this.prisma.job, {}, options);
+    return await this.paginate<Job, Prisma.JobFindManyArgs>(this.prisma.job, {}, options);
   }
   async getEmployerJobs(id: number, options?: PaginateOptions) {
-    return await this.paginate<any, any>(
+    return await this.paginate<Job, Prisma.JobFindManyArgs>(
       this.prisma.job,
       { where: { employerId: id } },
       options,
@@ -26,7 +28,7 @@ export class JobsService {
   }
 
   async getApplicationsForAllJobs(id: number, options?: PaginateOptions) {
-    return await this.paginate<any, any>(
+    return await this.paginate<Job, Prisma.JobFindManyArgs>(
       this.prisma.job,
       {
         where: { employerId: id },
