@@ -11,6 +11,7 @@ export class Job {
   })
   id: number;
   @ApiProperty({
+    type: () => User,
     required: false,
   })
   employer?: User;
@@ -54,11 +55,13 @@ export class Job {
   })
   updatedAt: Date;
   @ApiProperty({
+    type: () => Application,
     isArray: true,
     required: false,
   })
   applications?: Application[];
   @ApiProperty({
+    type: () => Location,
     required: false,
   })
   location?: Location;
@@ -68,6 +71,7 @@ export class Job {
   })
   locationId: number;
   @ApiProperty({
+    type: () => Company,
     required: false,
   })
   company?: Company;

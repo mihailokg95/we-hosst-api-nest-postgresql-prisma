@@ -1,4 +1,4 @@
-import { UserRole, NotificationsPreference } from '@prisma/client';
+import { NotificationsPreference, UserRole } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UserDto {
@@ -32,6 +32,7 @@ export class UserDto {
   password: string;
   @ApiProperty({
     enum: UserRole,
+    enumName: 'UserRole',
   })
   role: UserRole;
   @ApiProperty({
@@ -64,6 +65,7 @@ export class UserDto {
   @ApiProperty({
     isArray: true,
     enum: NotificationsPreference,
+    enumName: 'NotificationsPreference',
   })
   notificationPreferences: NotificationsPreference[];
 }

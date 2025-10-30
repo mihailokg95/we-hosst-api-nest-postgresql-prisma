@@ -16,10 +16,12 @@ export class Application {
   })
   jobId: number;
   @ApiProperty({
+    type: () => Job,
     required: false,
   })
   job?: Job;
   @ApiProperty({
+    type: () => User,
     required: false,
   })
   applicant?: User;
@@ -38,6 +40,7 @@ export class Application {
   coverLetter: string;
   @ApiProperty({
     enum: ApplicationStatus,
+    enumName: 'ApplicationStatus',
   })
   status: ApplicationStatus;
   @ApiProperty({
@@ -56,10 +59,12 @@ export class Application {
   })
   companyId: number;
   @ApiProperty({
+    type: () => Company,
     required: false,
   })
   company?: Company;
   @ApiProperty({
+    type: () => User,
     isArray: true,
     required: false,
   })

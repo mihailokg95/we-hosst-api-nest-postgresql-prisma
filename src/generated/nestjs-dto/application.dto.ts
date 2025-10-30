@@ -17,6 +17,7 @@ export class ApplicationDto {
   coverLetter: string;
   @ApiProperty({
     enum: ApplicationStatus,
+    enumName: 'ApplicationStatus',
   })
   status: ApplicationStatus;
   @ApiProperty({

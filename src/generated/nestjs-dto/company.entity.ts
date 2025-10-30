@@ -15,11 +15,13 @@ export class Company {
   })
   address: string;
   @ApiProperty({
+    type: () => Application,
     isArray: true,
     required: false,
   })
   applications?: Application[];
   @ApiProperty({
+    type: () => Job,
     isArray: true,
     required: false,
   })
@@ -43,6 +45,7 @@ export class Company {
   })
   employerName: string | null;
   @ApiProperty({
+    type: () => Location,
     isArray: true,
     required: false,
   })
@@ -102,6 +105,7 @@ export class Company {
   })
   updatedAt: Date;
   @ApiProperty({
+    type: () => User,
     isArray: true,
     required: false,
   })

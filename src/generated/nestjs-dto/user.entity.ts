@@ -1,4 +1,4 @@
-import { UserRole, NotificationsPreference } from '@prisma/client';
+import { NotificationsPreference, UserRole } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
 import { Application } from './application.entity';
 import { Job } from './job.entity';
@@ -35,6 +35,7 @@ export class User {
   password: string;
   @ApiProperty({
     enum: UserRole,
+    enumName: 'UserRole',
   })
   role: UserRole;
   @ApiProperty({
@@ -49,6 +50,7 @@ export class User {
   })
   bookmarks: number[];
   @ApiProperty({
+    type: () => Application,
     isArray: true,
     required: false,
   })
@@ -70,6 +72,7 @@ export class User {
   })
   updatedAt: Date;
   @ApiProperty({
+    type: () => Job,
     isArray: true,
     required: false,
   })
@@ -77,14 +80,17 @@ export class User {
   @ApiProperty({
     isArray: true,
     enum: NotificationsPreference,
+    enumName: 'NotificationsPreference',
   })
   notificationPreferences: NotificationsPreference[];
   @ApiProperty({
+    type: () => Application,
     isArray: true,
     required: false,
   })
   applicationsApplicant?: Application[];
   @ApiProperty({
+    type: () => Company,
     required: false,
     nullable: true,
   })
