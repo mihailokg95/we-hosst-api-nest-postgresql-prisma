@@ -41,10 +41,10 @@ export class AuthService {
       if (!user) {
         throw new ForbiddenException('Could not create user');
       }
-      return {user};
+      return { message: 'User registered successfully', user };
     } catch (error: any) {
       console.log(error)
-      return error.response;
+      throw error;
     }
   }
 
@@ -105,7 +105,7 @@ export class AuthService {
           'refreshTokenExpiresIn',
         ),
         secret: this.configService.getOrThrow('jwt_secret'),
-      },
+      } as any,
     );
     res.cookie('jwt-token-refresh', refreshToken, {
       httpOnly: true, // accessible only by the web server

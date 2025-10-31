@@ -1,6 +1,13 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { UserRole } from '@prisma/client';
+import { Prisma } from '@prisma/client';
+
+export enum UserRole {
+  USER = 'USER',
+  EMPLOYER = 'EMPLOYER',
+  ADMIN = 'ADMIN',
+  MANAGER = 'MANAGER',
+}
 
 @Injectable()
 export class Guard implements CanActivate {

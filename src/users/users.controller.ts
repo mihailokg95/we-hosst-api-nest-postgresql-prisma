@@ -9,7 +9,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
@@ -27,8 +27,8 @@ export class UsersController {
 
   @Get()
   findAll(
-    @Query('page') page: number = 1, // Set default page to 1
-    @Query('limit') limit: number = 10, // Set default limit to 10
+    @Query('page') page = 1, // Set default page to 1
+    @Query('limit') limit = 10, // Set default limit to 10
     @Query('odrderBy')
     orderBy: { updatedAt: Prisma.SortOrder } = {
       updatedAt: 'asc' as Prisma.SortOrder,
@@ -64,5 +64,37 @@ export class UsersController {
       secure: true,
     });
     return this.usersService.deleteUser(+id);
+  }
+
+  @Get('bookmarked-jobs')
+  async getBookmarkedJobs(req: Request) {
+    // TODO: replace with auth user extraction
+    const user = await this.usersService.findAll({ page: 1, limit: 1 });
+    const firstId = (user.data?.[0] as any)?.id ?? 1;
+    return this.usersService.getBookmarkedJobs(firstId);
+  }
+
+  @Post('jobs/:jobId/bookmark')
+  async bookmarkJob(@Param('jobId') jobId: string) {
+    const users = await this.usersService.findAll({ page: 1, limit: 1 });
+    const firstId = (users.data?.[0] as any)?.id ?? 1;
+    return this.usersService.bookmarkJob(firstId, +jobId);
+  }
+
+  @Get('applications')
+  async getApplications() {
+    const users = await this.usersService.findAll({ page: 1, limit: 1 });
+    const firstId = (users.data?.[0] as any)?.id ?? 1;
+    return this.usersService.getApplications(firstId);
+  }
+
+  @Post('jobs/:jobId/apply')
+  async applyJob(
+    @Param('jobId') jobId: string,
+    @Body() body: { resume: string; coverLetter: string },
+  ) {
+    const users = await this.usersService.findAll({ page: 1, limit: 1 });
+    const firstId = (users.data?.[0] as any)?.id ?? 1;
+    return this.usersService.applyToJob(firstId, +jobId, body);
   }
 }

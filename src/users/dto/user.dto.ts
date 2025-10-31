@@ -1,4 +1,11 @@
-import { UserRole } from '@prisma/client';
+import { Prisma } from '@prisma/client';
+
+export enum UserRole {
+  USER = 'USER',
+  EMPLOYER = 'EMPLOYER',
+  ADMIN = 'ADMIN',
+  MANAGER = 'MANAGER',
+}
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UserDto {

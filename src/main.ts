@@ -9,12 +9,15 @@ async function bootstrap() {
   app.use(cookieParser());
 
   app.enableCors({
-    origin: [
-      'http://localhost:5173',
-      'http://localhost:4173',
-    ],
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      if (/^http:\/\/localhost:(5173|4173|8080)$/.test(origin)) {
+        return callback(null, true);
+      }
+      return callback(null, false);
+    },
     credentials: true,
-    optionsSuccessStatus: 200,
+    optionsSuccessStatus: 204,
     exposedHeaders: ['Authorization'],
     allowedHeaders: [
       'Content-Type',

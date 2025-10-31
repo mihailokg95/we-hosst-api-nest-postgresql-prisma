@@ -1,5 +1,30 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Company } from '@prisma/client';
+import { Prisma } from '@prisma/client';
+
+export class Company {
+  id: number;
+  address: string;
+  applications: any[];
+  jobs: any[];
+  description: string;
+  email: string;
+  employerId: number;
+  employerName: string | null;
+  locations: any[];
+  images: string[];
+  managers: string[];
+  socialNetworks: string[];
+  name: string;
+  logo: string | null;
+  phone: string;
+  zip: string;
+  vat: string;
+  crn: string;
+  website: string;
+  createdAt: Date;
+  updatedAt: Date;
+  members: any[];
+}
 
 export class CreateLocationDto {
   @ApiProperty({
